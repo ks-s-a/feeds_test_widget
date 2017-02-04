@@ -2,7 +2,7 @@ var path = require("path")
 
 module.exports = {
   entry: {
-    app: ['./app/index.js']
+    app: ['babel-regenerator-runtime', './app/index.js']
   },
   output: {
     path: path.resolve(__dirname, "dist"),
