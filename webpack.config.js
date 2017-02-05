@@ -12,6 +12,13 @@ module.exports = {
     rules: [{
       test: /\.(js|jsx)$/,
       use: 'babel-loader'
+    }, {
+      test: /\.styl$/,
+      use: [
+        'style-loader',
+        'css-loader',
+        'stylus-loader'
+      ],
     }]
   },
   devtool: "eval-cheap-module-source-map"

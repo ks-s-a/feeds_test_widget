@@ -1,47 +1,48 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import cn from 'classnames'
 
-import { getInitialShops } from '../actions'
+import * as Actions from '../actions'
+import Table from '../components/Table'
+import Tabs from '../components/Tabs'
 
 class App extends Component {
-  // state = {
-  //   activeShop = null
-  // }
-
   componentDidMount() {
     this.props.getInitialShops()
   }
 
+  /**
+   * Shows the loading element.
+   *
+   * @return     {Object}  React element
+   */
   showLoading() {
     return null
   }
 
-  getShopTabs(shops) {
-    return Array.from(shops).map((shop, i) => 
-      (<li key={i} role="presentation"><a href="#">{shop[0]}</a></li>)
-    )
+  /**
+   * Gets the shop names from shop data.
+   *
+   * @return     {Array}  The shop names.
+   */
+  getShopNames() {
+    const { shops } = this.props
+    return Array.from(shops).map(shop => shop[0])
   }
 
-  // chooseShop(shopName) {
-
-  // }
-
   render() {
-    const { isInitialized, shops } = this.props
-
-    console.log(this.props)
+    const { isInitialized, shops, currentShop, pickShop } = this.props
 
     if (!isInitialized)
       return this.showLoading()
 
-    console.log('this.props.shops',this.props.shops)
+    const tableData = shops.get(currentShop).products || []
     return <div>
-      <ul className="nav nav-tabs">
-        { this.getShopTabs(shops) }
-        <li><a>+</a></li>
-      </ul>
-      Hello, react!!!
+      <Tabs
+        shops={ this.getShopNames() }
+        currentShop={ currentShop }
+        pickShop={ pickShop.bind(this) } />
+      <Table
+        data={ tableData } />
     </div>
   }
 }
@@ -53,7 +54,8 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  getInitialShops: () => dispatch(getInitialShops()),
+  getInitialShops: () => dispatch(Actions.getInitialShops()),
+  pickShop: shopName => dispatch(Actions.pickShop(shopName)),
 })
 
 export default connect(

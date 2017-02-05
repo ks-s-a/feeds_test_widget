@@ -1,13 +1,6 @@
-import { getInitialAppNames } from '../api'
-
-const receiveInitialShopNames = (shopNames, firstShopName) => ({
+const receiveShopNames = (shopNames, firstShopName) => ({
   type: 'RECEIVE_INITIAL_SHOP_NAMES',
   shopNames,
-})
-
-const pickShop = (shopName) => ({
-  type: 'PICK_SHOP',
-  shopName,
 })
 
 const receiveShopData = (shopName, shopData) => ({
@@ -16,12 +9,26 @@ const receiveShopData = (shopName, shopData) => ({
   shopData,
 })
 
-const getFirstShopData = (firstShopName) => (dispatch) => {
-  return fetch(`http://localhost:3000/?shop=${firstShopName}`)
+export const pickShop = (shopName) => (dispatch, getState) => {
+  const { shops, currentShop } = getState()
+
+  if (shopName === currentShop)
+    return
+
+  dispatch({
+    type: 'PICK_SHOP',
+    shopName,
+  })
+  
+  if (!shops.get(shopName).products)
+    dispatch(getShopData(shopName))
+}
+
+const getShopData = shopName => dispatch => {
+  return fetch(`http://localhost:3000/?shop=${shopName}`)
     .then(response => response.json())
-    .then(shopData => {
-      dispatch(receiveShopData(firstShopName, shopData))
-    })
+    .then(shopData => 
+      dispatch(receiveShopData(shopName, shopData)))
 }
 
 export const getInitialShops = () => (dispatch) => {
@@ -30,9 +37,8 @@ export const getInitialShops = () => (dispatch) => {
     .then(results => {
       const firstShopName = results && results[0] && results[0].name
 
-      dispatch(receiveInitialShopNames(results))
+      dispatch(receiveShopNames(results))
       dispatch(pickShop(firstShopName))
-      dispatch(getFirstShopData(firstShopName))
     })
 }
 

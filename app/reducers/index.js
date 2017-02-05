@@ -30,7 +30,7 @@ export default (state = initialState, action) => {
 
       return {
         ...state,
-        shops: state.shops.set(name, action.shopData),
+        shops: new Map(state.shops.set(name, action.shopData)),
         isInitialized: true
       }
     }

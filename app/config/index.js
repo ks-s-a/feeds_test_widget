@@ -1,0 +1,1 @@
+export const NUM_OF_VISIBLE_TABLE_ROWS = 100
