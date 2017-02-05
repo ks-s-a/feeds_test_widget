@@ -3,6 +3,11 @@ const receiveShopNames = (shopNames, firstShopName) => ({
   shopNames,
 })
 
+const setLoadingState = (state) => ({
+  type: 'SET_LOADING_STATE',
+  isLoading: state,
+})
+
 const receiveShopData = (shopName, shopData) => ({
   type: 'RECEIVE_SHOP_DATA',
   shopName,
@@ -20,18 +25,24 @@ export const pickShop = (shopName) => (dispatch, getState) => {
     shopName,
   })
   
-  if (!shops.get(shopName).products)
+  if (!shops.get(shopName).products) {
+    dispatch(setLoadingState(true))
     dispatch(getShopData(shopName))
+  }
 }
 
 const getShopData = shopName => dispatch => {
   return fetch(`http://localhost:3000/?shop=${shopName}`)
     .then(response => response.json())
-    .then(shopData => 
-      dispatch(receiveShopData(shopName, shopData)))
+    .then(shopData => {
+      dispatch(receiveShopData(shopName, shopData))
+      dispatch(setLoadingState(false))
+    })
 }
 
 export const getInitialShops = () => (dispatch) => {
+  dispatch(setLoadingState(true))
+
   return fetch('http://localhost:3000/')
     .then(response => response.json())
     .then(results => {

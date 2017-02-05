@@ -4,19 +4,11 @@ import { connect } from 'react-redux'
 import * as Actions from '../actions'
 import Table from '../components/Table'
 import Tabs from '../components/Tabs'
+import LoadingButton from '../components/LoadingButton'
 
 class App extends Component {
   componentDidMount() {
     this.props.getInitialShops()
-  }
-
-  /**
-   * Shows the loading element.
-   *
-   * @return     {Object}  React element
-   */
-  showLoading() {
-    return null
   }
 
   /**
@@ -30,10 +22,16 @@ class App extends Component {
   }
 
   render() {
-    const { isInitialized, shops, currentShop, pickShop } = this.props
+    const {
+      isInitialized,
+      shops,
+      currentShop,
+      pickShop,
+      isLoading
+    } = this.props
 
     if (!isInitialized)
-      return this.showLoading()
+      return <LoadingButton />
 
     const tableData = shops.get(currentShop).products || []
     return <div>
@@ -41,8 +39,8 @@ class App extends Component {
         shops={ this.getShopNames() }
         currentShop={ currentShop }
         pickShop={ pickShop.bind(this) } />
-      <Table
-        data={ tableData } />
+      { isLoading && <LoadingButton /> }
+      { !isLoading && <Table data={ tableData } /> }
     </div>
   }
 }
@@ -51,6 +49,7 @@ const mapStateToProps = state => ({
   shops: state.shops,
   isInitialized: state.isInitialized,
   currentShop: state.currentShop,
+  isLoading: state.isLoading,
 })
 
 const mapDispatchToProps = dispatch => ({

@@ -2,6 +2,7 @@ const initialState = {
   shops: new Map(),
   isInitialized: false,
   currentShop: null,
+  isLoading: true,
 }
 
 export default (state = initialState, action) => {
@@ -32,6 +33,12 @@ export default (state = initialState, action) => {
         ...state,
         shops: new Map(state.shops.set(name, action.shopData)),
         isInitialized: true
+      }
+    }
+    case 'SET_LOADING_STATE': {
+      return {
+        ...state,
+        isLoading: action.isLoading,
       }
     }
     default:
