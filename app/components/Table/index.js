@@ -4,6 +4,10 @@ import css from './index.styl'
 import { NUM_OF_VISIBLE_TABLE_ROWS } from '../../config'
 
 class Table extends Component {
+  static propTypes = {
+    data: React.PropTypes.array.isRequired,
+  }
+
   state = {
     numOfVisibleRows: NUM_OF_VISIBLE_TABLE_ROWS,
     visibleRows: this.props.data.slice(0, NUM_OF_VISIBLE_TABLE_ROWS),
@@ -22,7 +26,7 @@ class Table extends Component {
 
     // show only needed amount of data
     return data.slice(0, numOfVisibleRows).map((rowData, i) => <tr key={i}>
-      <td >{rowData.productId}</td>
+      <td >{rowData.product_id}</td>
       <td>{rowData.price}</td>
     </tr>)
   }
@@ -65,10 +69,6 @@ class Table extends Component {
       { needShowMore && this.getShowMoreButton() }
     </div>
   }
-}
-
-Table.propTypes = {
-  data: React.PropTypes.array.isRequired,
 }
 
 export default Table
