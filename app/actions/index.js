@@ -1,3 +1,5 @@
+import { API_ENDPOINT } from '../config'
+
 const RECEIVE_INITIAL_SHOP_NAMES = 'RECEIVE_INITIAL_SHOP_NAMES'
 const RECEIVE_SHOP_DATA = 'RECEIVE_SHOP_DATA'
 const PICK_SHOP = 'PICK_SHOP'
@@ -30,8 +32,8 @@ export const pickShop = (shopName) => (dispatch, getState) => {
   }
 }
 
-const getShopData = shopName => dispatch => {
-  return fetch(`http://localhost:3000/?shop=${shopName}`)
+const getShopData = shopName => (dispatch, getState) => {
+  return fetch(`${API_ENDPOINT}?shop=${shopName}`)
     .then(response => response.json())
     .then(shopData => {
       dispatch(receiveShopData(shopName, shopData))
@@ -45,13 +47,16 @@ const getShopData = shopName => dispatch => {
 export const getInitialShops = () => (dispatch) => {
   dispatch(setLoadingState(true))
 
-  return fetch('http://localhost:3000/')
+  return fetch(API_ENDPOINT)
     .then(response => response.json())
     .then(results => {
-      const firstShopName = results && results[0] && results[0].name
-
       dispatch(receiveShopNames(results))
-      dispatch(pickShop(firstShopName))
+
+      const firstShopName = results && results[0] && results[0].name
+      if (firstShopName)
+        dispatch(pickShop(firstShopName))
+      else
+        dispatch(setLoadingState(false))
     })
     .catch(e => {
       dispatch(showNotify('error', `Error: ${e.message}`))
@@ -111,7 +116,7 @@ export const addFeed = (params) => (dispatch, getState) => {
   dispatch(setModalLoadingState(true))
 
 
-  fetch(`http://localhost:3000/`, {
+  fetch(API_ENDPOINT, {
     method: 'POST',
     body: formData,
   })
@@ -120,6 +125,7 @@ export const addFeed = (params) => (dispatch, getState) => {
       dispatch(setModalLoadingState(false))
       dispatch(toggleModal(false))
       dispatch(receiveShopData(params.name, { products }))
+      dispatch(pickShop(params.name))
       dispatch(showNotify('success', 'Feed added!'))
     })
     .catch(e => {

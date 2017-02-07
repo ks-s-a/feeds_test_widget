@@ -4,7 +4,7 @@ import cn from 'classnames'
 class Tabs extends Component {
   static propTypes = {
     shops: React.PropTypes.array.isRequired,
-    currentShop: React.PropTypes.string.isRequired,
+    currentShop: React.PropTypes.string,
     pickShop: React.PropTypes.func.isRequired,
     toggleModal: React.PropTypes.func.isRequired,
   }
