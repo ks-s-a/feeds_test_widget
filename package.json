@@ -4,7 +4,7 @@
   "description": "HELLO world",
   "main": "index.js",
   "scripts": {
-    "start": "webpack-dev-server --port 1234 --content-base dist/",
+    "start": "./node_modules/webpack-dev-server/bin/webpack-dev-server.js --port 1234 --content-base dist/",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
